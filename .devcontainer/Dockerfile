@@ -7,8 +7,9 @@ RUN Rscript -e 'BiocManager::install(c("ComplexHeatmap", "DESeq2", "DropletUtils
  && Rscript -e 'ok <- vapply(c("ComplexHeatmap", "DESeq2", "DropletUtils", "ExperimentHub", "Seurat", "SingleCellExperiment", "SingleR", "UCell", "celda", "celldex", "circlize", "clusterProfiler", "clustifyr", "dplyr", "enrichplot", "fishpond", "genefilter", "ggplot2", "harmony", "here", "knitr", "msigdbr", "org.Hs.eg.db", "presto", "purrr", "rmarkdown", "rtracklayer", "scCustomize", "scDblFinder", "scater", "sessioninfo", "stringr", "tibble", "tictoc", "tidyr"), requireNamespace, logical(1), quietly = TRUE); if (!all(ok)) stop("missing: ", paste(names(ok)[!ok], collapse = " ")); cat("all course packages installed\n")' \
  && rm -rf /tmp/downloaded_packages /tmp/Rtmp*
 
-# RStudio Server without a login page, running as the rstudio user, opening the course folder.
-RUN printf 'auth-none=1\nserver-user=rstudio\n' >> /etc/rstudio/rserver.conf \
- && printf 'session-default-working-dir=/workspaces/scrnaseq-course-env\nsession-default-new-project-dir=/workspaces/scrnaseq-course-env\n' >> /etc/rstudio/rsession.conf \
+# RStudio Server without a login page. The image's /init (rocker) configures RStudio from DISABLE_AUTH/USER at start-up;
+# these lines make the same settings explicit (each on its own line) and open the course folder by default.
+RUN { echo; echo "auth-none=1"; echo "server-user=rstudio"; } >> /etc/rstudio/rserver.conf \
+ && { echo; echo "session-default-working-dir=/workspaces/scrnaseq-course-env"; echo "session-default-new-project-dir=/workspaces/scrnaseq-course-env"; } >> /etc/rstudio/rsession.conf \
  && echo "rstudio ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/rstudio && chmod 0440 /etc/sudoers.d/rstudio
-ENV DISABLE_AUTH=true
+ENV DISABLE_AUTH=true USER=rstudio

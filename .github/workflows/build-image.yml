@@ -16,10 +16,13 @@ jobs:
         with: { context: .devcontainer, push: true, tags: "ghcr.io/crazyhottommy/scrnaseq-course-env:latest" }
       - name: Smoke test
         run: docker run --rm ghcr.io/crazyhottommy/scrnaseq-course-env:latest Rscript -e 'suppressPackageStartupMessages({library(Seurat); library(SingleR); library(clusterProfiler); library(presto)}); cat("R", R.version.string, "| Seurat", as.character(packageVersion("Seurat")), "| rstudio-server:", nzchar(Sys.which("rstudio-server")), "\n")'
-      - name: RStudio serves without a login (as the devcontainer will run it)
+      - name: RStudio serves without a login (same launch as the devcontainer: image /init as PID 1)
         run: |
-          docker run -d --name rs -p 8787:8787 -u rstudio -e DISABLE_AUTH=true ghcr.io/crazyhottommy/scrnaseq-course-env:latest bash -c 'sudo rstudio-server start && sleep 600'
-          for i in $(seq 1 30); do code=$(curl -s -o /tmp/rs.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done
-          echo "HTTP $code"; grep -qi 'rstudio' /tmp/rs.html && ! grep -qi 'sign in' /tmp/rs.html && echo "RStudio page served, no login form" || { echo "RStudio check failed"; docker logs rs | tail -20; exit 1; }
-          docker exec -u rstudio rs bash -c 'sudo -n true && echo "rstudio user can sudo"' && docker exec rs Rscript -e 'cat("here:", requireNamespace("here", quietly=TRUE), "jsonlite:", requireNamespace("jsonlite", quietly=TRUE), "\n")'
+          docker run -d --name rs -p 8787:8787 -e DISABLE_AUTH=true -e USER=rstudio ghcr.io/crazyhottommy/scrnaseq-course-env:latest
+          for i in $(seq 1 45); do code=$(curl -s -o /tmp/rs.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done
+          echo "HTTP $code"
+          if [ "$code" = "200" ] && grep -qi 'rstudio' /tmp/rs.html && ! grep -qi 'sign in' /tmp/rs.html; then echo "RStudio page served, no login form"; else
+            echo "RStudio check failed"; curl -sI http://localhost:8787/ | head -5; echo "--- rserver.conf"; docker exec rs cat /etc/rstudio/rserver.conf; echo "--- logs"; docker logs rs 2>&1 | tail -30; exit 1; fi
+          docker exec -u rstudio rs bash -c 'sudo -n true && echo "rstudio user can sudo"'
+          docker exec rs Rscript -e 'cat("here:", requireNamespace("here", quietly=TRUE), "jsonlite:", requireNamespace("jsonlite", quietly=TRUE), "\n")'
           docker rm -f rs >/dev/null
