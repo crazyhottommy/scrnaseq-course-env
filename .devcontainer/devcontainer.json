@@ -17,7 +17,8 @@
   "portsAttributes": {
     "8787": {
       "label": "RStudio",
-      "onAutoForward": "openBrowser"
+      "onAutoForward": "notify",
+      "requireLocalPort": false
     }
   },
   "postCreateCommand": "bash download-data.sh scrnaseq > data-download.log 2>&1 || echo 'data download failed \u2014 run: bash download-data.sh' ",
