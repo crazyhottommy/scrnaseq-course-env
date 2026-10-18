@@ -35,5 +35,8 @@
       ]
     }
   },
-  "overrideCommand": false
+  "overrideCommand": false,
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  }
 }
