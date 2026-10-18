@@ -1,0 +1,18 @@
+name: build course image
+on:
+  push: { branches: [main], paths: ['.devcontainer/**', '.github/workflows/build-image.yml'] }
+  workflow_dispatch: {}
+permissions: { contents: read, packages: write }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /usr/local/.ghcup && df -h / | tail -1
+      - uses: docker/login-action@v3
+        with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
+      - uses: docker/build-push-action@v6
+        with: { context: .devcontainer, push: true, tags: "ghcr.io/crazyhottommy/scrnaseq-course-env:latest" }
+      - name: Smoke test
+        run: docker run --rm ghcr.io/crazyhottommy/scrnaseq-course-env:latest Rscript -e 'suppressPackageStartupMessages({library(Seurat); library(SingleR); library(clusterProfiler); library(presto)}); cat("R", R.version.string, "| Seurat", as.character(packageVersion("Seurat")), "| rstudio-server:", nzchar(Sys.which("rstudio-server")), "\n")'

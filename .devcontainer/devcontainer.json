@@ -1,0 +1,37 @@
+{
+  "name": "Practical scRNA-seq Analysis with R",
+  "image": "ghcr.io/crazyhottommy/scrnaseq-course-env:latest",
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb",
+    "storage": "32gb"
+  },
+  "remoteUser": "rstudio",
+  "containerEnv": {
+    "DISABLE_AUTH": "true"
+  },
+  "forwardPorts": [
+    8787
+  ],
+  "portsAttributes": {
+    "8787": {
+      "label": "RStudio",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "bash download-data.sh scrnaseq > data-download.log 2>&1 || echo 'data download failed \u2014 run: bash download-data.sh' ",
+  "postStartCommand": "sudo rstudio-server start",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "REditorSupport.r",
+        "quarto.quarto"
+      ]
+    },
+    "codespaces": {
+      "openFiles": [
+        "README.md"
+      ]
+    }
+  }
+}
