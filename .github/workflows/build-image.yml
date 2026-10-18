@@ -16,7 +16,7 @@ jobs:
         with: { context: .devcontainer, push: true, tags: "ghcr.io/crazyhottommy/scrnaseq-course-env:latest" }
       - name: Smoke test
         run: docker run --rm ghcr.io/crazyhottommy/scrnaseq-course-env:latest Rscript -e 'suppressPackageStartupMessages({library(Seurat); library(SingleR); library(clusterProfiler); library(presto)}); cat("R", R.version.string, "| Seurat", as.character(packageVersion("Seurat")), "| rstudio-server:", nzchar(Sys.which("rstudio-server")), "\n")'
-      - name: RStudio serves without a login (same launch as the devcontainer: image /init as PID 1)
+      - name: "RStudio serves without a login (same launch as the devcontainer, image init as PID 1)"
         run: |
           docker run -d --name rs -p 8787:8787 -e DISABLE_AUTH=true -e USER=rstudio ghcr.io/crazyhottommy/scrnaseq-course-env:latest
           for i in $(seq 1 45); do code=$(curl -s -o /tmp/rs.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done
