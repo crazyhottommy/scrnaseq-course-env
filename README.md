@@ -15,7 +15,7 @@ Coming back later: the same button reopens your existing codespace (that's what 
 
 **Everyday controls**
 - *Lost the Ports panel?* Press **Cmd/Ctrl+Shift+P** and run **Ports: Focus on Ports View**, or click the radio-tower icon with a number in the bottom-left status bar.
-- *Stop the codespace when you're done* (saves your free hours): click the green **Codespaces** button in the bottom-left corner → **Stop Current Codespace**, or use the "…" menu at github.com/codespaces. Stopping keeps your files; it also stops by itself after 30 minutes idle.
+- *Stop the codespace when you're done* (saves your free hours): click the **Codespaces: …** button in the very bottom-left corner of the window (blue or green depending on your theme) → **Stop Current Codespace**, or use the "…" menu at github.com/codespaces. Stopping keeps your files; it also stops by itself after 30 minutes idle.
 - *Delete* only when you no longer need it (github.com/codespaces → "…" → Delete). Unused codespaces are deleted automatically after 30 days, so download anything you want to keep.
 
 Prefer to own the repo (for example to push your notes to GitHub)? Click **Use this template → Create a new repository** first, then open a codespace on your copy; everything else is identical.
