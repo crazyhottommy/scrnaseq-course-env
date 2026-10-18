@@ -11,7 +11,12 @@ One click gives you RStudio in the browser with R 4.4, Bioconductor 3.19, every 
 4. In RStudio, open the project: **File → Open Project → scrnaseq-course.Rproj**. The `data/` folder is already there.
 5. Get the course code: log in at https://learn.chatomics.com/scrnaseq/ and click **Download the code (zip)** in the page footer. In RStudio's **Files** pane click **Upload**, choose `code.zip`, and it unpacks into `qmd/` (the chapters) and `R/` (plain R scripts). Open `qmd/02-quality-control.qmd` and start typing along.
 
-Coming back later: the same button reopens your existing codespace (that's what `quickstart=1` does); starts take about 30 seconds and your files are kept. Codespaces stop by themselves after 30 minutes of inactivity and are deleted after 30 days unused, so download anything you want to keep. GitHub's free tier is 120 core-hours a month, about 30 hours on this machine.
+Coming back later: the same button reopens your existing codespace (that's what `quickstart=1` does); starts take about 30 seconds and your files are kept. GitHub's free tier is 120 core-hours a month, about 30 hours on this machine.
+
+**Everyday controls**
+- *Lost the Ports panel?* Press **Cmd/Ctrl+Shift+P** and run **Ports: Focus on Ports View**, or click the radio-tower icon with a number in the bottom-left status bar.
+- *Stop the codespace when you're done* (saves your free hours): click the green **Codespaces** button in the bottom-left corner → **Stop Current Codespace**, or use the "…" menu at github.com/codespaces. Stopping keeps your files; it also stops by itself after 30 minutes idle.
+- *Delete* only when you no longer need it (github.com/codespaces → "…" → Delete). Unused codespaces are deleted automatically after 30 days, so download anything you want to keep.
 
 Prefer to own the repo (for example to push your notes to GitHub)? Click **Use this template → Create a new repository** first, then open a codespace on your copy; everything else is identical.
 
