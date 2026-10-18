@@ -19,10 +19,10 @@ jobs:
       - name: "RStudio serves without a login (same launch as the devcontainer, image init as PID 1)"
         run: |
           docker run -d --name rs -p 8787:8787 -e DISABLE_AUTH=true -e USER=rstudio ghcr.io/crazyhottommy/scrnaseq-course-env:latest
-          for i in $(seq 1 45); do code=$(curl -s -o /tmp/rs.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done
+          for i in $(seq 1 45); do code=$(curl -s -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36' -o /tmp/rs.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done
           echo "HTTP $code"
           if [ "$code" = "200" ] && grep -qi 'rstudio' /tmp/rs.html && ! grep -qi 'sign in' /tmp/rs.html; then echo "RStudio page served, no login form"; else
-            echo "RStudio check failed"; curl -sI http://localhost:8787/ | head -5; echo "--- rserver.conf"; docker exec rs cat /etc/rstudio/rserver.conf; echo "--- logs"; docker logs rs 2>&1 | tail -30; exit 1; fi
+            echo "RStudio check failed"; curl -sI -A 'Mozilla/5.0 Chrome/124.0' http://localhost:8787/ | head -5; echo "--- rserver.conf"; docker exec rs cat /etc/rstudio/rserver.conf; echo "--- logs"; docker logs rs 2>&1 | tail -30; exit 1; fi
           docker exec -u rstudio rs bash -c 'sudo -n true && echo "rstudio user can sudo"'
           docker exec rs Rscript -e 'cat("here:", requireNamespace("here", quietly=TRUE), "jsonlite:", requireNamespace("jsonlite", quietly=TRUE), "\n")'
           docker rm -f rs >/dev/null
