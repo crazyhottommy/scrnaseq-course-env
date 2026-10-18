@@ -4,19 +4,13 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: Try launch variants against the published image
+      - name: Probe the devcontainer launch with a cookie jar (auth-none signs in via cookie)
         run: |
           IMG=ghcr.io/crazyhottommy/scrnaseq-course-env:latest; docker pull -q $IMG >/dev/null
           UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36'
-          probe() { for i in $(seq 1 20); do code=$(curl -sL --max-redirs 6 -A "$UA" -o /tmp/p.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done; echo "   → HTTP $code $(grep -qi 'sign in' /tmp/p.html && echo '(sign-in page)' || true) $(grep -qi 'rstudio' /tmp/p.html && echo '(rstudio page)')"; }
-          echo "## A: rocker init, DISABLE_AUTH=true USER=rstudio (devcontainer as pushed)"
-          docker run -d --name rs -p 8787:8787 -e DISABLE_AUTH=true -e USER=rstudio $IMG >/dev/null; sleep 10; probe
-          echo "   conf: $(docker exec rs cat /etc/rstudio/rserver.conf | tr '\n' '|')"; echo "   rstudio-server user: $(docker exec rs id rstudio-server 2>&1 | head -1)"; echo "   rserver log:"; docker exec rs bash -c 'tail -5 /var/log/rstudio/rstudio-server/rserver.log 2>/dev/null || ls /var/log/rstudio 2>/dev/null' | sed 's/^/     /'
-          echo "## B: same + server-user=rstudio appended, rserver restarted"
-          docker exec rs bash -c 'echo server-user=rstudio >> /etc/rstudio/rserver.conf && rstudio-server restart' ; sleep 6; probe
-          docker rm -f rs >/dev/null
-          echo "## C: explicit conf baked (auth-none + server-user) with rocker init but DISABLE_AUTH unset"
-          docker run -d --name rs -p 8787:8787 -e USER=rstudio -e PASSWORD=unused $IMG >/dev/null; sleep 2
-          docker exec rs bash -c 'printf "rsession-which-r=/usr/local/bin/R\nauth-none=1\nserver-user=rstudio\n" > /etc/rstudio/rserver.conf && rstudio-server restart'; sleep 8; probe
-          echo "   conf: $(docker exec rs cat /etc/rstudio/rserver.conf | tr '\n' '|')"
+          docker run -d --name rs -p 8787:8787 -e DISABLE_AUTH=true -e USER=rstudio $IMG >/dev/null; sleep 10
+          rm -f /tmp/jar; for i in $(seq 1 20); do code=$(curl -sL --max-redirs 8 -c /tmp/jar -b /tmp/jar -A "$UA" -o /tmp/p.html -w '%{http_code}' http://localhost:8787/ || true); [ "$code" = "200" ] && break; sleep 2; done
+          echo "RESULT: HTTP $code; sign-in page: $(grep -qi 'sign in' /tmp/p.html && echo yes || echo no); rstudio page: $(grep -qi 'rstudio' /tmp/p.html && echo yes || echo no); cookies: $(grep -c . /tmp/jar || true)"
+          echo "redirect chain:"; curl -sIL --max-redirs 4 -c /tmp/jar2 -b /tmp/jar2 -A "$UA" http://localhost:8787/ | grep -E '^HTTP|^Location' | tr -d '\r' | sed 's/^/   /'
+          docker exec -u rstudio rs bash -c 'sudo -n true && echo "rstudio user can sudo"'
           docker rm -f rs >/dev/null
