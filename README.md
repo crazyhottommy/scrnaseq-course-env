@@ -18,6 +18,11 @@ Coming back later: the same button reopens your existing codespace (that's what 
 - *Stop the codespace when you're done* (saves your free hours): click the **Codespaces: …** button in the very bottom-left corner of the window (blue or green depending on your theme) → **Stop Current Codespace**, or use the "…" menu at github.com/codespaces. Stopping keeps your files; it also stops by itself after 30 minutes idle.
 - *Delete* only when you no longer need it (github.com/codespaces → "…" → Delete). Unused codespaces are deleted automatically after 30 days, so download anything you want to keep.
 
+**RStudio tab stuck on "Authenticating" or "just getting your codespace ready"?** That page is GitHub signing you in to the forwarded port, not RStudio. It spins forever when your browser blocks GitHub's sign-in cookie: Safari's "Prevent cross-site tracking", ad blockers, private windows, or a browser where you aren't signed in to GitHub. Any one of these fixes it:
+- In the **Ports** tab, right-click the **RStudio** row → **Preview in Editor**. RStudio opens inside the codespace window, which is already signed in.
+- Open the address in Chrome (signed in to GitHub), or in Safari turn off **Settings → Privacy → Prevent cross-site tracking** and reload.
+- Still stuck? Check RStudio itself: open **Terminal → New Terminal** in the codespace and run `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8787/`. `200` means RStudio is running and the problem is the browser (use one of the fixes above). `000` means RStudio isn't running: press **Cmd/Ctrl+Shift+P** and run **Codespaces: Rebuild Container** (your files are kept).
+
 Prefer to own the repo (for example to push your notes to GitHub)? Click **Use this template → Create a new repository** first, then open a codespace on your copy; everything else is identical.
 
 ## On your own computer
