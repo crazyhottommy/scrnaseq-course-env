@@ -5100,9 +5100,9 @@
     },
     "edgeR": {
       "Package": "edgeR",
-      "Version": "4.2.1",
+      "Version": "4.2.2",
       "Source": "Bioconductor",
-      "Date": "2024-07-14",
+      "Date": "2024-10-10",
       "Title": "Empirical Analysis of Digital Gene Expression Data in R",
       "Description": "Differential expression analysis of RNA-seq expression profiles with biological replication. Implements a range of statistical methodology based on the negative binomial distributions, including empirical Bayes estimation, exact tests, generalized linear models and quasi-likelihood tests. As well as RNA-seq, it be applied to differential signal analysis of other types of genomic data that produce read counts, including ChIP-seq, ATAC-seq, Bisulfite-seq, SAGE and CAGE.",
       "Author": "Yunshun Chen, Aaron TL Lun, Davis J McCarthy, Lizhong Chen, Pedro Baldoni, Matthew E Ritchie, Belinda Phipson, Yifang Hu, Xiaobei Zhou, Mark D Robinson, Gordon K Smyth",
@@ -5143,8 +5143,8 @@
       "NeedsCompilation": "yes",
       "git_url": "https://git.bioconductor.org/packages/edgeR",
       "git_branch": "RELEASE_3_19",
-      "git_last_commit": "28d4b46",
-      "git_last_commit_date": "2024-07-14",
+      "git_last_commit": "d50e802",
+      "git_last_commit_date": "2024-10-10",
       "Repository": "Bioconductor 3.19"
     },
     "enrichR": {
